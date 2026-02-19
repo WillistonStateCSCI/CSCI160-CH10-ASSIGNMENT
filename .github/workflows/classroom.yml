@@ -1,0 +1,136 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Q10_36 Test
+      id: q10_36-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_36 Test
+        setup-command: javac Q10_36/*.java
+        command: java -cp Q10_36 PCBasedGameClient
+        input: ''
+        expected-output: |-
+          Creating and printing Game 1: Counterstrike, requiring 256MB ram, 3000MB hd, and 1.8Ghz cpu
+          Description: CounterStrike
+          Minimum Configuration: RAM: 256 MB; hard disk: 3000 MB; CPU: 1.8 Ghz
+
+          Creating and printing Game 1: NFL, requiring 128MB ram, 1500MB hd, and 1.5Ghz cpu
+          Description: NFL
+          Minimum Configuration: RAM: 128 MB; hard disk: 1500 MB; CPU: 1.5 Ghz
+
+          Updating Game 2 to require 256MB ram, 3000MB hd, and 1.8 Ghz cpu
+          Checking if the two games are equal.
+          pcbg1 and pcbg2 are not equal
+
+          Updating Game 2 description to CounterStrike
+
+          Checking if the two games are equal.
+          pcbg1 and pcbg2 are now equal
+        comparison-method: contains
+        timeout: 10
+        max-score: 4
+    - name: Q10_38 Test
+      id: q10_38-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_38 Test
+        setup-command: javac Q10_38/*.java
+        command: java -cp Q10_38 SportsGameClient
+        input: ''
+        expected-output: "Generating sg1 with description Soccer, a team sport, a
+          tie is possible.\nGenerating sg2 with description 100 yards, not a team
+          sport, a tie is not possible.\n\nPrinting sg1 and sg2: \nDescription: Soccer;
+          Is a team game: true; Can end in a tie: true\nDescription: 100 yards; Is
+          a team game: false; Can end in a tie: true\n\nSetting sg2 as a team sport\nChecking
+          if the two games are equal\nsg1 and sg2 are not equal\n\nSetting sg2 description
+          to Soccer\n\nChecking if the two games are equal:\nsg1 and sg2 are now equal"
+        comparison-method: contains
+        timeout: 10
+        max-score: 4
+    - name: Q10_39 Test
+      id: q10_39-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_39 Test
+        setup-command: javac Q10_39/*.java
+        command: java -cp Q10_39 TriviaGameClient
+        input: ''
+        expected-output: "Generating tg1 with description Millionaire, prize of 1000000,
+          10 questions\nGenerating tg2 with description Jeopardy, prize of 10000,
+          50 questions\n\nPrinting both games: \nDescription: Millionaire\nPrize money:
+          $1,000,000.00; Number of questions to answer: 10\nDescription: Jeopardy\nPrize
+          money: $10,000.00; Number of questions to answer: 50\n\nSetting tg2 prize
+          to 1000000 and number of questions to 10\nChecking if the games are equal\ntg1
+          and tg2 are not equal\n\nUpdating tg2 description to millionaire.\nChecking
+          if the games are equal\ntg1 and tg2 are now equal"
+        comparison-method: contains
+        timeout: 10
+        max-score: 4
+    - name: Q10_41 Test
+      id: q10_41-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_41 Test
+        setup-command: javac Q10_41/*.java
+        command: java -cp Q10_41 WebStoreClient
+        input: ''
+        expected-output: |-
+          Generating new WebStore ws1 named Computer Books, Inc. at domain name www.cbi.inc written in java
+          Generating new Webstore ws2 named Bikes Unlimited at domain name www.bikeshop.com written in perl
+
+          Printing both WebStores
+          name: Computer Books, Inc.; Domain name: www.cbi.inc; Language: java
+          name: Bikes Unlimited; Domain name: www.bikeshop.com; Language: perl
+
+          Setting ws2 domain to www.cbi.inc and language to JAVA
+          Checking if the two stores are equal
+          ws1 and ws2 are not equal
+
+          Updating ws2 name to Computer Books, Inc.
+          Checking if the two stores are equal
+          ws1 and ws2 are now equal
+        comparison-method: contains
+        timeout: 10
+        max-score: 4
+    - name: Q10_42 Test
+      id: q10_42-test
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Q10_42 Test
+        setup-command: javac Q10_42/*.java
+        command: java -cp Q10_42 MusicStoreClient
+        input: ''
+        expected-output: "Generating new store ms1 named Records, Inc. with 1000 titles
+          located at 123 Elm Street\nGenerating new store ms2 named All Records Unlimited
+          with 1200 titles located at 999 Green Street\n\nPrinting both music stores:\nname:
+          Records, Inc.; number of titles: 1000; address: 123 Elm Street\nname: All
+          Records Unlimited; number of titles: 1200; address: 999 Green Street\n\nSetting
+          ms2 to have 1000 titles and be located at 123 Elm Street\nChecking if the
+          two stores are equal: \nms1 and ms2 are not equal\n\nSetting the name of
+          ms2 to Records, Inc\nChecking if the two stores are equal\nms1 and ms2 are
+          now equal"
+        comparison-method: contains
+        timeout: 10
+        max-score: 4
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        Q10_36-TEST_RESULTS: "${{steps.q10_36-test.outputs.result}}"
+        Q10_38-TEST_RESULTS: "${{steps.q10_38-test.outputs.result}}"
+        Q10_39-TEST_RESULTS: "${{steps.q10_39-test.outputs.result}}"
+        Q10_41-TEST_RESULTS: "${{steps.q10_41-test.outputs.result}}"
+        Q10_42-TEST_RESULTS: "${{steps.q10_42-test.outputs.result}}"
+      with:
+        runners: q10_36-test,q10_38-test,q10_39-test,q10_41-test,q10_42-test
